@@ -22,6 +22,7 @@ RUN apk update \
     build-base \ 
     bzip2 \ 
     coreutils \ 
+    curl \
     gnutls \ 
     nasm \ 
     tar \ 
