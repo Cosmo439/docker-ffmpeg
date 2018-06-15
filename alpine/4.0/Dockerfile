@@ -1,6 +1,5 @@
 FROM alpine:3.7
 
-# Install dependencies
 RUN apk update \
     && apk --update add \
     freetype-dev \
@@ -28,18 +27,15 @@ RUN apk update \
     tar \ 
     x264
 
-######################################################
-# Install ffmpeg
-######################################################
 ENV FFMPEG_VERSION=4.0
-ENV SOFTWARE_VERSION_URL="http://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.bz2"
 ENV BIN="/usr/bin"
 
-ADD temp/*  /tmp/installs
-
+RUN mkdir -p /tmp/installs
 WORKDIR /tmp/installs
 
-RUN cd ffmpeg* \
+RUN DIR=$(mktemp -d) && cd ${DIR} \
+    && curl -s http://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.gz | tar zxvf - -C . \
+    && cd ffmpeg* \
     && PATH="$BIN:$PATH" \
     && ./configure --bindir="$BIN" --disable-debug \
     --disable-doc \ 
@@ -64,10 +60,11 @@ RUN cd ffmpeg* \
     --enable-version3 \
     && make \
     && make install \
-    && make distclean
-######################################################
-# Done installing ffmpeg
-######################################################
+    && make distclean \
+    && rm -rf ${DIR} \
+    && apk del build-base curl tar bzip2 x264 openssl nasm \
+    && rm -rf /var/cache/apk/* \
+    && rm -rf /tmp/installs
 
 WORKDIR /workdir
 
