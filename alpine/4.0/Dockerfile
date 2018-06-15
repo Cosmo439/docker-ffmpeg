@@ -31,7 +31,7 @@ RUN apk update \
 ######################################################
 # Install ffmpeg
 ######################################################
-ARG FFMPEG_VERSION
+ENV FFMPEG_VERSION=4.0
 ENV SOFTWARE_VERSION_URL="http://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.bz2"
 ENV BIN="/usr/bin"
 
